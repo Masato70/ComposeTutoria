@@ -25,9 +25,12 @@ import com.example.composetutoria.ui.theme.ComposeTutoriaTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            ComposeTutoriaTheme() {
-                Conversation(SampleData.conversationSample)
+            Surface(modifier = Modifier.fillMaxSize()) {
+                ComposeTutoriaTheme() {
+                    Conversation(SampleData.conversationSample)
+                }
             }
         }
     }
@@ -72,7 +75,7 @@ fun MessageCard(msg: Message) {
 
 @Composable
 fun Conversation(messages: List<Message>) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(messages) { message ->
             MessageCard(message)
         }
