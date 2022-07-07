@@ -4,6 +4,8 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -55,6 +57,10 @@ fun MessageCard(msg: Message) {
 
         var isExpanded by remember { mutableStateOf(false) }
 
+        val surfaceColor by animateColorAsState(
+            if (isExpanded) MaterialTheme.colors.primary else MaterialTheme.colors.surface,
+        )
+
         Column(modifier = Modifier.clickable { isExpanded = !isExpanded }) {
             Text(
                 text = msg.author,
@@ -62,10 +68,18 @@ fun MessageCard(msg: Message) {
             )
             Spacer(modifier = Modifier.height(4.dp))
 
-            Surface(shape = MaterialTheme.shapes.medium, elevation = 1.dp) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                elevation = 1.dp,
+                color = surfaceColor,
+                modifier = Modifier.animateContentSize().padding(1.dp)
+
+            ) {
                 Text(
                     text = msg.body,
                     modifier = Modifier.padding(all = 4.dp),
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+                    style = MaterialTheme.typography.body2
                 )
 
             }
@@ -75,7 +89,7 @@ fun MessageCard(msg: Message) {
 
 @Composable
 fun Conversation(messages: List<Message>) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn {
         items(messages) { message ->
             MessageCard(message)
         }
@@ -89,6 +103,7 @@ fun PreviewConversation() {
         Conversation(SampleData.conversationSample)
     }
 }
+
 
 @Preview(name = "Light_Mode")
 @Preview(
